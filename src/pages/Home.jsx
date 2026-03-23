@@ -110,6 +110,18 @@ export default function Home() {
     },
   };
 
+  const navBtn = (active) => ({
+    flex: 1,
+    padding: '10px 0 8px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '3px',
+    cursor: 'pointer',
+    background: 'none',
+    border: 'none',
+  });
+
   return (
     <div style={s.page}>
       <div style={s.header}>
@@ -117,11 +129,13 @@ export default function Home() {
           <span style={{ fontSize: '22px', cursor: 'pointer', color: '#374151' }}>☰</span>
           <span style={s.headerTitle}>Office System</span>
         </div>
-        <div style={s.avatar}>👤</div>
+        <div style={s.avatar} onClick={() => navigate('/profile')}>
+          👤
+        </div>
       </div>
 
       <div style={s.body}>
-        <div style={s.greeting}>Привіт, Поліно 👋</div>
+        <div style={s.greeting}>Привіт 👋</div>
         <div style={s.subtitle}>Чим можемо допомогти сьогодні?</div>
 
         <div style={s.grid}>
@@ -151,26 +165,13 @@ export default function Home() {
             <span style={s.myTicketsLabel}>Мої запити</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={s.myTicketsBadge}>3</span>
             <span style={s.myTicketsArrow}>→</span>
           </div>
         </div>
       </div>
 
       <div style={s.bottomNav}>
-        <button
-          onClick={() => navigate('/')}
-          style={{
-            flex: 1,
-            padding: '10px 0 8px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '3px',
-            cursor: 'pointer',
-            background: 'none',
-            border: 'none',
-          }}>
+        <button onClick={() => navigate('/')} style={navBtn(true)}>
           <div
             style={{
               fontSize: '20px',
@@ -183,35 +184,11 @@ export default function Home() {
           </div>
           <span style={{ fontSize: '11px', color: '#6366F1', fontWeight: '600' }}>HOME</span>
         </button>
-        <button
-          onClick={() => navigate('/my-tickets')}
-          style={{
-            flex: 1,
-            padding: '10px 0 8px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '3px',
-            cursor: 'pointer',
-            background: 'none',
-            border: 'none',
-          }}>
+        <button onClick={() => navigate('/my-tickets')} style={navBtn(false)}>
           <div style={{ fontSize: '20px', color: '#9CA3AF' }}>📋</div>
           <span style={{ fontSize: '11px', color: '#9CA3AF' }}>REQUESTS</span>
         </button>
-        <button
-          onClick={() => navigate('/admin')}
-          style={{
-            flex: 1,
-            padding: '10px 0 8px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '3px',
-            cursor: 'pointer',
-            background: 'none',
-            border: 'none',
-          }}>
+        <button onClick={() => navigate('/profile')} style={navBtn(false)}>
           <div style={{ fontSize: '20px', color: '#9CA3AF' }}>👤</div>
           <span style={{ fontSize: '11px', color: '#9CA3AF' }}>PROFILE</span>
         </button>
