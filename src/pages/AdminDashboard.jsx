@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
@@ -23,6 +23,15 @@ export default function AdminDashboard() {
   const [filter, setFilter] = useState('all');
   const [comments, setComments] = useState({});
 
+  const loadTickets = useCallback(async () => {
+    const { data } = await supabase
+      .from('tickets')
+      .select('*')
+      .order('created_at', { ascending: false });
+    setTickets(data || []);
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
     loadTickets();
     const channel = supabase
@@ -32,16 +41,7 @@ export default function AdminDashboard() {
       )
       .subscribe();
     return () => supabase.removeChannel(channel);
-  }, []);
-
-  async function loadTickets() {
-    const { data } = await supabase
-      .from('tickets')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setTickets(data || []);
-    setLoading(false);
-  }
+  }, [loadTickets]);
 
   async function updateStatus(id, status) {
     await supabase.from('tickets').update({ status }).eq('id', id);
