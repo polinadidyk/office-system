@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
 
 const requestTypes = [
   { type: 'order', icon: '🛒', label: 'Замовити', desc: 'Канцтовари, їжа, обладнання' },
@@ -9,6 +11,7 @@ const requestTypes = [
 
 export default function Home() {
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const s = {
     page: {
@@ -18,6 +21,8 @@ export default function Home() {
       maxWidth: '480px',
       margin: '0 auto',
       paddingBottom: '80px',
+      position: 'relative',
+      overflow: 'hidden',
     },
     header: {
       background: '#F5F5F7',
@@ -126,7 +131,11 @@ export default function Home() {
     <div style={s.page}>
       <div style={s.header}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '22px', cursor: 'pointer', color: '#374151' }}>☰</span>
+          <span
+            style={{ fontSize: '22px', cursor: 'pointer', color: '#374151' }}
+            onClick={() => setSidebarOpen(true)}>
+            ☰
+          </span>
           <span style={s.headerTitle}>Office System</span>
         </div>
         <div style={s.avatar} onClick={() => navigate('/profile')}>
@@ -193,6 +202,7 @@ export default function Home() {
           <span style={{ fontSize: '11px', color: '#9CA3AF' }}>PROFILE</span>
         </button>
       </div>
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </div>
   );
 }

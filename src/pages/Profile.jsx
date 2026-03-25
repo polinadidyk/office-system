@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getEmail } from '../lib/auth';
+import Sidebar from '../components/Sidebar';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [name, setName] = useState(localStorage.getItem('userName') || 'Співробітник');
-  const [email] = useState(localStorage.getItem('userEmail') || '');
-  const [notifications, setNotifications] = useState(true);
-  const [anonymous, setAnonymous] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const email = getEmail();
+  const name = email
+    ? email
+        .split('@')[0]
+        .split('.')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ')
+    : 'Співробітник';
   const initials = name
     .split(' ')
     .map((w) => w[0])
@@ -23,6 +30,8 @@ export default function Profile() {
       maxWidth: '480px',
       margin: '0 auto',
       paddingBottom: '80px',
+      position: 'relative',
+      overflow: 'hidden',
     },
     header: {
       background: '#F5F5F7',
@@ -146,20 +155,6 @@ export default function Profile() {
       transition: 'left 0.2s',
       boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
     }),
-    myTicketsBtn: {
-      margin: '0 20px 12px',
-      background: '#6366F1',
-      borderRadius: '16px',
-      padding: '16px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      cursor: 'pointer',
-      border: 'none',
-      width: 'calc(100% - 40px)',
-      fontFamily: 'Inter, sans-serif',
-    },
-    myTicketsBtnLabel: { fontSize: '15px', fontWeight: '600', color: '#fff' },
     logoutRow: {
       margin: '0 20px',
       background: '#fff',
@@ -195,7 +190,11 @@ export default function Profile() {
   return (
     <div style={s.page}>
       <div style={s.header}>
-        <span style={{ fontSize: '22px', cursor: 'pointer', color: '#374151' }}>☰</span>
+        <span
+          style={{ fontSize: '22px', cursor: 'pointer', color: '#374151' }}
+          onClick={() => setSidebarOpen(true)}>
+          ☰
+        </span>
         <span style={s.headerTitle}>Профіль</span>
         <span style={s.brandName}>Office System</span>
       </div>
@@ -228,40 +227,6 @@ export default function Profile() {
         </div>
       </div>
 
-      <button style={s.myTicketsBtn} onClick={() => navigate('/my-tickets')}>
-        <span style={s.myTicketsBtnLabel}>📋 Мої запити</span>
-        <span style={{ color: '#fff', fontSize: '18px' }}>→</span>
-      </button>
-
-      <div style={s.section}>
-        <div style={s.sectionTitle}>Налаштування</div>
-        <div style={s.row}>
-          <div style={s.rowLeft}>
-            <div style={s.rowIcon}>🔔</div>
-            <span style={s.rowLabel}>Сповіщення</span>
-          </div>
-          <button style={s.toggle(notifications)} onClick={() => setNotifications((n) => !n)}>
-            <div style={s.toggleThumb(notifications)} />
-          </button>
-        </div>
-        <div style={s.row}>
-          <div style={s.rowLeft}>
-            <div style={s.rowIcon}>🕵️</div>
-            <span style={s.rowLabel}>Анонімність за замовчуванням</span>
-          </div>
-          <button style={s.toggle(anonymous)} onClick={() => setAnonymous((a) => !a)}>
-            <div style={s.toggleThumb(anonymous)} />
-          </button>
-        </div>
-        <div style={s.row}>
-          <div style={s.rowLeft}>
-            <div style={s.rowIcon}>🌐</div>
-            <span style={s.rowLabel}>Мова</span>
-          </div>
-          <span style={{ fontSize: '14px', color: '#9CA3AF' }}>UA / EN →</span>
-        </div>
-      </div>
-
       <div style={s.logoutRow}>
         <button
           style={s.logoutBtn}
@@ -275,6 +240,8 @@ export default function Profile() {
       </div>
 
       <div style={{ height: '20px' }} />
+
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div style={s.bottomNav}>
         <button

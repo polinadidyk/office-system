@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 export default function Success() {
   const navigate = useNavigate();
   const { ticketId } = useParams();
-  const shortId = ticketId ? ticketId.slice(0, 8).toUpperCase() : '--------';
+  const shortId = ticketId ? ticketId.slice(0, 6).toUpperCase() : '------';
 
   return (
     <div
@@ -71,11 +71,18 @@ export default function Success() {
             fontWeight: '600',
             letterSpacing: '0.8px',
             marginBottom: '6px',
+            textAlign: 'center',
           }}>
           НОМЕР ЗАПИТУ
         </div>
         <div
-          style={{ fontSize: '22px', fontWeight: '700', color: '#6366F1', letterSpacing: '2px' }}>
+          style={{
+            fontSize: '22px',
+            fontWeight: '700',
+            color: '#6366F1',
+            letterSpacing: '2px',
+            textAlign: 'center',
+          }}>
           #{shortId}
         </div>
       </div>

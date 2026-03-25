@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { getEmail } from '../lib/auth';
 
 const typeConfig = {
   order: {
@@ -40,9 +41,8 @@ export default function RequestForm() {
   const { type } = useParams();
   const navigate = useNavigate();
   const config = typeConfig[type] || typeConfig.idea;
+  const email = getEmail();
 
-  const [isAnonymous, setIsAnonymous] = useState(false);
-  const [email, setEmail] = useState('');
   const [description, setDescription] = useState('');
   const [comment, setComment] = useState('');
   const [object, setObject] = useState('');
@@ -58,8 +58,6 @@ export default function RequestForm() {
       background: '#F5F5F7',
       color: '#1a1a1a',
       fontFamily: 'Inter, -apple-system, sans-serif',
-      maxWidth: '480px',
-      margin: '0 auto',
     },
     header: {
       background: '#fff',
@@ -179,43 +177,6 @@ export default function RequestForm() {
       alignItems: 'center',
       gap: '8px',
     },
-    anonRow: {
-      background: '#fff',
-      border: '1px solid #E5E7EB',
-      borderRadius: '12px',
-      padding: '16px',
-      display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
-      gap: '12px',
-      marginBottom: '20px',
-    },
-    anonText: { flex: 1 },
-    anonTitle: { fontSize: '15px', fontWeight: '600', color: '#111827', marginBottom: '4px' },
-    anonDesc: { fontSize: '13px', color: '#6B7280', lineHeight: '1.4' },
-    toggleTrack: (on) => ({
-      width: '48px',
-      height: '28px',
-      borderRadius: '14px',
-      background: on ? '#6366F1' : '#D1D5DB',
-      cursor: 'pointer',
-      position: 'relative',
-      transition: 'background 0.2s',
-      flexShrink: 0,
-      border: 'none',
-      outline: 'none',
-    }),
-    toggleThumb: (on) => ({
-      position: 'absolute',
-      top: '3px',
-      left: on ? '23px' : '3px',
-      width: '22px',
-      height: '22px',
-      borderRadius: '50%',
-      background: '#fff',
-      transition: 'left 0.2s',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-    }),
     submitBtn: {
       width: '100%',
       padding: '16px',
@@ -268,10 +229,6 @@ export default function RequestForm() {
       setError('Будь ласка, заповни основне поле');
       return;
     }
-    if (!isAnonymous && !email.trim()) {
-      setError('Вкажи свою пошту або обери анонімно');
-      return;
-    }
     setLoading(true);
     setError('');
     const fullDesc =
@@ -282,8 +239,8 @@ export default function RequestForm() {
       .from('tickets')
       .insert({
         type,
-        email: isAnonymous ? null : email,
-        is_anonymous: isAnonymous,
+        email,
+        is_anonymous: false,
         description: fullDesc,
         object: type === 'problem' ? object : null,
         status: 'new',
@@ -395,31 +352,6 @@ export default function RequestForm() {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-        </div>
-
-        {!isAnonymous && (
-          <div style={s.group}>
-            <label style={s.fieldLabel}>ТВОЯ КОРПОРАТИВНА ПОШТА</label>
-            <input
-              style={s.input}
-              type="email"
-              placeholder="name@tech-stack.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-        )}
-
-        <div style={s.anonRow}>
-          <div style={s.anonText}>
-            <div style={s.anonTitle}>Надіслати анонімно</div>
-            <div style={s.anonDesc}>
-              Ваше ім'я не буде відображатися менеджеру в списку активних запитів.
-            </div>
-          </div>
-          <button style={s.toggleTrack(isAnonymous)} onClick={() => setIsAnonymous((a) => !a)}>
-            <div style={s.toggleThumb(isAnonymous)} />
-          </button>
         </div>
 
         {error && <div style={s.error}>{error}</div>}
